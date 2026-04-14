@@ -1,0 +1,13 @@
+{
+  "tracked_num": 100,
+  "init_error": 1e-7,
+  "tracker": {
+    "inlier_ratio": 0.92,
+    "num_keyframes": 17
+  },
+  "loop": {
+    "candidates": 3,
+    "score": 0.81
+  },
+  "stage": "tracking"
+}

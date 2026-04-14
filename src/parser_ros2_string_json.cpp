@@ -31,28 +31,35 @@ bool ROS2StringJsonMessageParser::parseRos2StringPayload(const PJ::MessageRef se
 
   if (size < 8)
   {
-    qWarning() << "ROS2 String message too short to parse";
+    qWarning().noquote() << QString("[%1] ROS2 String message too short to parse (%2 bytes)")
+                                .arg(topicPrefix())
+                                .arg(size);
     return false;
   }
 
   const uint32_t cdr_header = ReadLe32(data);
   if (cdr_header != 0x00010000 && cdr_header != 0x00000000)
   {
-    qWarning() << "Unexpected CDR encapsulation for std_msgs/String:" << Qt::hex << cdr_header;
+    qWarning().noquote() << QString("[%1] unexpected CDR encapsulation for std_msgs/String: 0x%2")
+                                .arg(topicPrefix())
+                                .arg(cdr_header, 8, 16, QLatin1Char('0'));
   }
 
   const uint32_t string_size = ReadLe32(data + 4);
   const size_t payload_end = size_t(8) + size_t(string_size);
   if (payload_end > size || string_size == 0)
   {
-    qWarning() << "Invalid std_msgs/String payload size:" << string_size;
+    qWarning().noquote() << QString("[%1] invalid std_msgs/String payload size: %2")
+                                .arg(topicPrefix())
+                                .arg(string_size);
     return false;
   }
 
   const char* str_ptr = reinterpret_cast<const char*>(data + 8);
   if (str_ptr[string_size - 1] != '\0')
   {
-    qWarning() << "std_msgs/String payload is not null-terminated";
+    qWarning().noquote() << QString("[%1] std_msgs/String payload is not null-terminated")
+                                .arg(topicPrefix());
     return false;
   }
 
@@ -60,15 +67,27 @@ bool ROS2StringJsonMessageParser::parseRos2StringPayload(const PJ::MessageRef se
   return true;
 }
 
+QString ROS2StringJsonMessageParser::topicPrefix() const
+{
+  return QString::fromStdString(_topic_name);
+}
+
 void ROS2StringJsonMessageParser::pushNumeric(const std::string& key, double timestamp, double value)
 {
+  if (key.empty())
+  {
+    return;
+  }
+
   const QString qkey = QString::fromStdString(key);
   if (!_known_series.contains(qkey))
   {
     if (_known_series.size() >= qsizetype(_max_series))
     {
-      qWarning() << "Refusing to create additional JSON series beyond limit:" << _max_series
-                 << "key=" << qkey;
+      qWarning().noquote() << QString("[%1] refusing to create additional JSON series beyond limit %2: %3")
+                                  .arg(topicPrefix())
+                                  .arg(_max_series)
+                                  .arg(qkey);
       return;
     }
     _known_series.insert(qkey);
@@ -123,13 +142,16 @@ bool ROS2StringJsonMessageParser::parseMessage(const PJ::MessageRef serialized_m
   }
   catch (const std::exception& ex)
   {
-    qWarning() << "Failed to parse JSON from std_msgs/String:" << ex.what();
+    qWarning().noquote() << QString("[%1] failed to parse JSON from std_msgs/String: %2")
+                                .arg(topicPrefix())
+                                .arg(ex.what());
     return false;
   }
 
   if (!value.is_object())
   {
-    qWarning() << "Expected top-level JSON object in std_msgs/String";
+    qWarning().noquote() << QString("[%1] expected top-level JSON object in std_msgs/String")
+                                .arg(topicPrefix());
     return false;
   }
 

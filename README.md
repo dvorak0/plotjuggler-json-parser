@@ -35,6 +35,30 @@ becomes:
 - allows dynamic fields
 - limits created series to 200 per topic
 
-## Status
+## Build status
 
-Initial scaffold only. Build integration with upstream PlotJuggler / plotjuggler-ros-plugins still needs to be validated.
+Validated to build inside `uniflexai/tinynav:latest` on `nixos-1` with these packages installed:
+
+- `ros-humble-plotjuggler`
+- `ros-humble-plotjuggler-ros`
+- `qtbase5-dev`
+- `libqt5xml5`, Qt Xml dev headers
+- `nlohmann-json3-dev`
+
+Build command used:
+
+```bash
+source /opt/ros/humble/setup.bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/opt/ros/humble
+cmake --build build -j2
+```
+
+Current output artifact:
+
+- `libParserROS2StringJson.so`
+
+## Current limitations
+
+- only build-validated so far, not yet runtime-validated inside PlotJuggler UI
+- ROS2 `std_msgs/String` payload extraction is currently implemented manually from serialized bytes
+- the plugin is currently standalone, not yet integrated into upstream `plotjuggler-ros-plugins`
