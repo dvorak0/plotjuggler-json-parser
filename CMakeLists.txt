@@ -9,12 +9,20 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 find_package(nlohmann_json REQUIRED)
-find_package(PlotJuggler REQUIRED)
+find_package(plotjuggler REQUIRED)
+
+if(NOT DEFINED PJ_PLUGIN_INSTALL_DIRECTORY)
+  set(PJ_PLUGIN_INSTALL_DIRECTORY lib/plotjuggler)
+endif()
 
 add_library(ParserROS2StringJson SHARED
   src/parser_ros2_string_json.cpp
   src/parser_ros2_string_json.h
 )
+
+target_include_directories(ParserROS2StringJson PRIVATE /opt/ros/humble/include)
+
+target_link_directories(ParserROS2StringJson PRIVATE /opt/ros/humble/lib)
 
 target_link_libraries(ParserROS2StringJson
   PRIVATE
