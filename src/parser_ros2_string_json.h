@@ -41,7 +41,7 @@ public:
 
   const char* encoding() const override
   {
-    return "ros2msg_string_json";
+    return "ros2msg";
   }
 
   PJ::MessageParserPtr createParser(const std::string& topic_name, const std::string& type_name,

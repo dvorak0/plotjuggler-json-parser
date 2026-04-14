@@ -1,6 +1,6 @@
 # plotjuggler-json-parser
 
-A small PlotJuggler parser plugin prototype for ROS2 `std_msgs/msg/String` messages that contain JSON.
+A small PlotJuggler MessageParser plugin for ROS2 `std_msgs/msg/String` messages that contain JSON.
 
 ## Goal
 
@@ -28,7 +28,8 @@ becomes:
 
 ## MVP behavior
 
-- supports only ROS2 `std_msgs/msg/String`
+- registers on the standard `ros2msg` parser path
+- intercepts only ROS2 `std_msgs/msg/String`
 - expects a top-level JSON object
 - extracts only numeric leaf values
 - ignores strings, bools, arrays, and nulls
@@ -80,6 +81,6 @@ The script writes JSON messages with fields such as:
 
 ## Current limitations
 
-- only build-validated so far, not yet runtime-validated inside PlotJuggler UI
+- plugin loading was observed in PlotJuggler, but end-to-end runtime parsing is still being validated
 - ROS2 `std_msgs/String` payload extraction is currently implemented manually from serialized bytes
 - the plugin is currently standalone, not yet integrated into upstream `plotjuggler-ros-plugins`
