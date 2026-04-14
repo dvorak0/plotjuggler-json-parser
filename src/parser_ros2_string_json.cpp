@@ -21,6 +21,8 @@ ROS2StringJsonMessageParser::ROS2StringJsonMessageParser(const std::string& topi
                                                          PJ::PlotDataMapRef& data)
   : MessageParser(topic_name, data)
 {
+  qInfo().noquote() << QString("[ParserROS2StringJson] created parser for topic=%1")
+                           .arg(QString::fromStdString(topic_name));
 }
 
 bool ROS2StringJsonMessageParser::parseRos2StringPayload(const PJ::MessageRef serialized_msg,
@@ -129,6 +131,11 @@ void ROS2StringJsonMessageParser::flattenJson(const nlohmann::json& value, const
 
 bool ROS2StringJsonMessageParser::parseMessage(const PJ::MessageRef serialized_msg, double& timestamp)
 {
+  qInfo().noquote() << QString("[ParserROS2StringJson] parseMessage topic=%1 size=%2 timestamp=%3")
+                           .arg(topicPrefix())
+                           .arg(serialized_msg.size())
+                           .arg(timestamp, 0, 'g', 17);
+
   std::string text;
   if (!parseRos2StringPayload(serialized_msg, text))
   {
@@ -155,6 +162,10 @@ bool ROS2StringJsonMessageParser::parseMessage(const PJ::MessageRef serialized_m
     return false;
   }
 
+  qInfo().noquote() << QString("[ParserROS2StringJson] parsed JSON object topic=%1 keys=%2")
+                           .arg(topicPrefix())
+                           .arg(int(value.size()));
+
   flattenJson(value, "", timestamp);
   return true;
 }
@@ -165,6 +176,9 @@ PJ::MessageParserPtr ParserFactoryROS2StringJson::createParser(const std::string
                                                                PJ::PlotDataMapRef& data)
 {
   (void)schema;
+  qInfo().noquote() << QString("[ParserFactoryROS2StringJson] createParser topic=%1 type=%2")
+                           .arg(QString::fromStdString(topic_name))
+                           .arg(QString::fromStdString(type_name));
   if (type_name != "std_msgs/msg/String" && type_name != "std_msgs/String")
   {
     throw std::runtime_error("ParserROS2StringJson only supports std_msgs/msg/String");
