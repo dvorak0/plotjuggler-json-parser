@@ -7,7 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Xml)
 find_package(nlohmann_json REQUIRED)
 find_package(plotjuggler REQUIRED)
 
@@ -27,6 +27,7 @@ target_link_directories(ParserROS2StringJson PRIVATE /opt/ros/humble/lib)
 target_link_libraries(ParserROS2StringJson
   PRIVATE
     Qt5::Widgets
+    Qt5::Xml
     plotjuggler_base
     nlohmann_json::nlohmann_json
 )
