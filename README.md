@@ -57,6 +57,27 @@ Current output artifact:
 
 - `libParserROS2StringJson.so`
 
+## Test bag generator
+
+A helper script is included to generate a ROS2 bag containing JSON payloads in `std_msgs/msg/String`:
+
+```bash
+python3 scripts/make_test_bag.py --output test_bag_json_status
+```
+
+Default output topic:
+
+- `/debug_state`
+
+The script writes JSON messages with fields such as:
+
+- `tracked_num`
+- `init_error`
+- `tracker.inlier_ratio`
+- `tracker.num_keyframes`
+- `loop.candidates`
+- `loop.score`
+
 ## Current limitations
 
 - only build-validated so far, not yet runtime-validated inside PlotJuggler UI
